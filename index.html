@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lista de Materiais - Cebrace</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #000000;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #00b7d7;
+      color: rgb(255, 254, 253);
+      text-align: center;
+      padding: 20px 0;
+      font-size: 1.8em;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin: 25px;
+    }
+
+    input[type="text"] {
+      width: 60%;
+      padding: 12px 15px;
+      font-size: 1em;
+      border: 1px solid #000000;
+      border-radius: 8px;
+      outline: none;
+      box-shadow: 0 0 6px rgba(0, 120, 215, 0.2);
+      transition: 0.3s;
+    }
+
+    input[type="text"]:focus {
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    }
+
+    .materials-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 0 30px 40px;
+    }
+
+    .card {
+      background-color: rgb(202, 172, 127);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    }
+
+    .categoria {
+      font-weight: bold;
+      color: #ffffff;
+      margin-bottom: 5px;
+    }
+
+    .descricao {
+      font-size: 1em;
+      margin: 5px 0;
+      color: #333;
+    }
+
+    .codigo, .embalagem {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <header>Lista de Materiais</header>
+
+  <div class="search-container">
+    <input type="text" id="searchBox" placeholder="Buscar material ou código...">
+  </div>
+
+  <div class="materials-container" id="materialsContainer"></div>
+
+  <script>
+    const materials = [
+      { categoria: "CONSUMO", descricao: "AÇÚCAR REFINADO 1KG", codigo: "30027525", embalagem: "KG" },
+      { categoria: "CONSUMO", descricao: "ÁGUA MINERAL C/ GÁS 350ML", codigo: "30014282", embalagem: "FARDINHO 12UN" },
+      { categoria: "CONSUMO", descricao: "COPO DESCARTÁVEL CAFÉ 50ML", codigo: "30023432", embalagem: "CT" },
+      { categoria: "CONSUMO", descricao: "COPO DESCARTÁVEL ÁGUA 180ML", codigo: "30023433", embalagem: "CT" },
+      { categoria: "CONSUMO", descricao: "ESPÁTULA DESCARTÁVEL P/ CAFÉ", codigo: "30005863", embalagem: "MI" },
+      { categoria: "CONSUMO", descricao: "FILTRO DE PAPEL MELITA Nº103", codigo: "30014270", embalagem: "PC" },
+      { categoria: "CONSUMO", descricao: "FILTRO DE PAPEL MELITA Nº4", codigo: "30027642", embalagem: "PC" },
+      { categoria: "CONSUMO", descricao: "PÓ DE CAFÉ PILÃO 500G", codigo: "30027643", embalagem: "PC" },
+      { categoria: "LIMPEZA", descricao: "ÁGUA SANITÁRIA", codigo: "30014041", embalagem: "L" },
+      { categoria: "LIMPEZA", descricao: "ÁLCOOL 70° 1L", codigo: "30063218", embalagem: "UN" },
+      { categoria: "LIMPEZA", descricao: "ÁLCOOL EM GEL 500ML", codigo: "30063046", embalagem: "UN" },
+      { categoria: "LIMPEZA", descricao: "ÁLCOOL EM GEL 750ML REFIL", codigo: "30023667", embalagem: "FR" },
+      { categoria: "LIMPEZA", descricao: "BOMBRIL 8 UNIDADES", codigo: "30014040", embalagem: "PC" },
+      { categoria: "LIMPEZA", descricao: "CERA LÍQUIDA OPTIMUM 500ML", codigo: "30027645", embalagem: "PC" },
+      { categoria: "LIMPEZA", descricao: "DESINFETANTE PINHO SOL", codigo: "30014044", embalagem: "PC" },
+      { categoria: "LIMPEZA", descricao: "DESINFETANTE LAVANDA", codigo: "30005569", embalagem: "PC" },
+      { categoria: "LIMPEZA", descricao: "DETERGENTE LÍQUIDO LIMPOL 500ML", codigo: "30027647", embalagem: "PC" },
+      { categoria: "LIMPEZA", descricao: "LIMPA VIDRO VIDREX", codigo: "30014052", embalagem: "PC" },
+      { categoria: "LIMPEZA", descricao: "LUSTRA MÓVEIS 200ML", codigo: "30027701", embalagem: "PC" },
+      { categoria: "LIMPEZA", descricao: "SABONETE LÍQUIDO ERVA DOCE", codigo: "30028611", embalagem: "FR" },
+      { categoria: "LIMPEZA", descricao: "SABONETE LÍQUIDO OASIS", codigo: "30028612", embalagem: "FR" },
+      { categoria: "LIMPEZA", descricao: "SACO DE LIXO 150L AZUL", codigo: "30078699", embalagem: "PACOTE 100UN" },
+      { categoria: "LIMPEZA", descricao: "PANO DE LIMPEZA ALGODÃO 35X35CM", codigo: "30005562", embalagem: "PC" },
+
+  // 🧽 LIMPEZA
+  { categoria: "LIMPEZA", descricao: "ÁGUA MINERAL SEM GÁS 500ML", codigo: "30001234", embalagem: "UN" },
+  { categoria: "LIMPEZA", descricao: "PAPEL HIGIÊNICO NEUTRO 30M", codigo: "30004567", embalagem: "RL" },
+  { categoria: "LIMPEZA", descricao: "SABONETE ERVA DOCE 90G", codigo: "30005678", embalagem: "UN" },
+  { categoria: "LIMPEZA", descricao: "SABONETE OASIS 90G", codigo: "30005679", embalagem: "UN" },
+  { categoria: "LIMPEZA", descricao: "DETERGENTE NEUTRO 500ML", codigo: "30007890", embalagem: "FR" },
+  { categoria: "LIMPEZA", descricao: "ÁLCOOL 70% 1L", codigo: "30003456", embalagem: "FR" },
+  { categoria: "LIMPEZA", descricao: "DESINFETANTE PINHO 1L", codigo: "30008765", embalagem: "FR" },
+  { categoria: "LIMPEZA", descricao: "ÁGUA SANITÁRIA 1L", codigo: "30007891", embalagem: "FR" },
+  { categoria: "LIMPEZA", descricao: "LIMPA VIDROS 500ML", codigo: "30007892", embalagem: "FR" },
+  { categoria: "LIMPEZA", descricao: "DESENGORDURANTE MULTIUSO 500ML", codigo: "30007893", embalagem: "FR" },
+  { categoria: "LIMPEZA", descricao: "PANO DE LIMPEZA ALGODÃO 35X35CM", codigo: "30005562", embalagem: "PC" },
+  { categoria: "LIMPEZA", descricao: "LIXO PRETO 50L", codigo: "30003344", embalagem: "RL" },
+  { categoria: "LIMPEZA", descricao: "LIXO AZUL 100L", codigo: "30003345", embalagem: "RL" },
+  { categoria: "LIMPEZA", descricao: "ESPONJA DE LIMPEZA DUPLA FACE", codigo: "30006678", embalagem: "UN" },
+  { categoria: "LIMPEZA", descricao: "LUVA DE BORRACHA AMARELA", codigo: "30009988", embalagem: "PR" },
+  { categoria: "LIMPEZA", descricao: "VASSOURA C/ CABO", codigo: "30001123", embalagem: "UN" },
+  { categoria: "LIMPEZA", descricao: "RODO DE PLÁSTICO 40CM", codigo: "30001124", embalagem: "UN" },
+  { categoria: "LIMPEZA", descricao: "BALDE PLÁSTICO 10L", codigo: "30001125", embalagem: "UN" },
+  { categoria: "LIMPEZA", descricao: "ÁLCOOL GEL 500ML", codigo: "30007894", embalagem: "FR" },
+
+  // 🍽️ CONSUMO
+  { categoria: "CONSUMO", descricao: "COPO DESCARTÁVEL 200ML", codigo: "30002222", embalagem: "CX" },
+  { categoria: "CONSUMO", descricao: "PRATO DESCARTÁVEL 15CM", codigo: "30002223", embalagem: "CX" },
+  { categoria: "CONSUMO", descricao: "COLHER DESCARTÁVEL", codigo: "30002224", embalagem: "CX" },
+  { categoria: "CONSUMO", descricao: "GARFO DESCARTÁVEL", codigo: "30002225", embalagem: "CX" },
+  { categoria: "CONSUMO", descricao: "FACA DESCARTÁVEL", codigo: "30002226", embalagem: "CX" },
+  { categoria: "CONSUMO", descricao: "GUARDANAPO DE PAPEL 23X23CM", codigo: "30002227", embalagem: "PT" },
+  { categoria: "CONSUMO", descricao: "CAFÉ SOLÚVEL 50G", codigo: "30002228", embalagem: "PT" },
+  { categoria: "CONSUMO", descricao: "AÇÚCAR CRISTAL 1KG", codigo: "30002229", embalagem: "PT" },
+  { categoria: "CONSUMO", descricao: "ADOÇANTE LÍQUIDO 100ML", codigo: "30002230", embalagem: "FR" },
+  { categoria: "CONSUMO", descricao: "FILTRO DE PAPEL PARA CAFÉ", codigo: "30002231", embalagem: "CX" },
+  { categoria: "CONSUMO", descricao: "GUARDANAPO INTERFOLHA", codigo: "30002232", embalagem: "PT" },
+  { categoria: "CONSUMO", descricao: "FITA ADESIVA TRANSPARENTE 45MM", codigo: "30004444", embalagem: "RL" },
+  { categoria: "CONSUMO", descricao: "SOLIDIUM EM PÓ 500G", codigo: "30009999", embalagem: "PT" },
+
+
+
+];
+
+    const container = document.getElementById("materialsContainer");
+
+    function displayMaterials(items) {
+      container.innerHTML = "";
+      items.forEach(item => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `
+          <div class="categoria">${item.categoria}</div>
+          <div class="descricao">${item.descricao}</div>
+          <div class="codigo">Código: ${item.codigo}</div>
+          <div class="embalagem">Embalagem: ${item.embalagem}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    displayMaterials(materials);
+
+    document.getElementById("searchBox").addEventListener("input", function(e) {
+      const search = e.target.value.toLowerCase();
+      const filtered = materials.filter(item =>
+        item.descricao.toLowerCase().includes(search) ||
+        item.codigo.includes(search)
+      );
+      displayMaterials(filtered);
+    });
+  </script>
+</body>
+</html>
